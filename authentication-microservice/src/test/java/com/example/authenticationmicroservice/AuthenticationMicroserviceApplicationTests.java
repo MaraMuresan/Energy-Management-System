@@ -1,10 +1,10 @@
-package com.example.devicemanagementmicroservice;
+package com.example.authenticationmicroservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class DeviceManagementMicroserviceApplicationTests {
+class AuthenticationMicroserviceApplicationTests {
 
     @Test
     void contextLoads() {
