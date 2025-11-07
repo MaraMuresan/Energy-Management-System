@@ -1,0 +1,139 @@
+version: '3'
+
+services:
+
+  user_spring:
+    build: ./user-management-microservice 
+    image: user-management-microservice
+    ports:
+      - "8081:8081"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.user.rule=PathPrefix(`/user`)"
+      - "traefik.http.services.user.loadbalancer.server.port=8081"
+      - "traefik.http.routers.user.middlewares=auth@docker"
+    environment:
+      DB_IP: user_postgres_db
+    depends_on:
+      user_postgres_db:
+        condition: service_healthy 
+    networks:
+      - backend
+
+  user_postgres_db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: user_db
+    volumes:
+      - user_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - backend
+
+  device_spring:
+    build: ./device-management-microservice 
+    image: device-management-microservice
+    ports:
+      - "8082:8082"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.device.rule=PathPrefix(`/device`)"
+      - "traefik.http.services.device.loadbalancer.server.port=8082"
+      - "traefik.http.routers.device.middlewares=auth@docker"
+    environment:
+      DB_IP: device_postgres_db
+    depends_on:
+      device_postgres_db:
+        condition: service_healthy 
+    networks:
+      - backend
+
+  device_postgres_db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: device_db
+    volumes:
+      - device_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - backend
+
+  authentication_spring:
+    build: ./authentication-microservice 
+    image: authentication-microservice
+    ports:
+      - "8083:8083"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.authentication-spring.rule=PathPrefix(`/authentication`)"
+      - "traefik.http.services.authentication-spring.loadbalancer.server.port=8083"
+      - "traefik.http.routers.authentication-spring.middlewares="
+    environment:
+      DB_IP: authentication_postgres_db
+    depends_on:
+      authentication_postgres_db:
+        condition: service_healthy 
+    networks:
+      - backend
+
+  authentication_postgres_db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: user_credentials_db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - authentication_pgdata:/var/lib/postgresql/data
+    networks:
+      - backend
+  
+  traefik:
+    image: traefik:v3.0
+    container_name: traefik
+    restart: always
+    ports:
+      - "80:80" # The HTTP port
+      - "8080:8080" # Dashboard port
+    command:
+    - "--api.dashboard=true"
+    - "--api.insecure=true"     
+    - "--providers.docker=true"
+    - "--entrypoints.web.address=:80"
+    - "--log.level=DEBUG"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro" # Traefik can listen to the Docker events
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.middlewares.auth.forwardauth.address=http://authentication_spring:8083/authentication/validate"
+      - "traefik.http.middlewares.auth.forwardauth.trustForwardHeader=true"
+      - "traefik.http.middlewares.auth.forwardauth.authResponseHeaders=Authorization"
+      - "traefik.http.middlewares.auth.forwardauth.authRequestHeaders=Authorization"
+    networks:
+      - backend
+
+volumes:
+   user_pgdata:
+   device_pgdata:
+   authentication_pgdata:
+
+networks:
+  backend:
+    driver: bridge
+

@@ -1,0 +1,28 @@
+body {
+  background: linear-gradient(135deg, #ffe6f0, #ffe1f7, #f3e3ff);
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+}
+.page-center {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.card {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(255,182,193,0.4);
+  padding: 2rem;
+}
+.pink-card { max-width: 400px; }
+.large-card { width: 80%; }
+
+.title { color: #ff69b4; text-align: center; }
+.input { width: 100%; padding: 10px; margin: 8px 0; border-radius: 10px; border: 1px solid #ffb6c1; }
+.button { background-color: #ff69b4; color: white; border: none; padding: 10px 16px; border-radius: 10px; margin-top: 10px; cursor: pointer; }
+.button:hover { opacity: 0.9; }
+.link { color: #ff69b4; text-decoration: none; }
+.error { color: red; }
+.small-btn { margin-left: 10px; background: transparent; border: none; cursor: pointer; }
+.checkbox-list label { display: inline-block; margin: 5px 10px; }
