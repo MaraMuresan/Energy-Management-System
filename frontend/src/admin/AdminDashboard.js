@@ -5,14 +5,14 @@ import "../index.css";
 export default function AdminDashboard() {
     const [users, setUsers] = useState([]);
     const [devices, setDevices] = useState([]);
-    const [newUser, setNewUser] = useState({ username: "", role: "CLIENT", password: "1234" });
-    const [newDevice, setNewDevice] = useState({ name: "", maxConsumption: 0 });
+    const [newUser, setNewUser] = useState({ username: "", address: "", age: 0, password: "1234", role: "USER" });
+    const [newDevice, setNewDevice] = useState({ name: "", maximumConsumption: 0.0, yearOfManufacture: 2010 });
     const [assignUser, setAssignUser] = useState("");
     const [assignDevices, setAssignDevices] = useState([]);
 
     const loadAll = async () => {
-        const u = await api.get("/users");
-        const d = await api.get("/devices");
+        const u = await api.get("/user");
+        const d = await api.get("/device");
         setUsers(u.data);
         setDevices(d.data);
     };
@@ -20,45 +20,46 @@ export default function AdminDashboard() {
     useEffect(() => { loadAll(); }, []);
 
     const addUser = async () => {
-        await api.post("/users", newUser);
-        setNewUser({ username: "", role: "CLIENT", password: "1234" });
+        await api.post("/user", newUser);
+        setNewUser({ username: "", address: "", age: 0, password: "1234", role: "USER" });
         loadAll();
     };
 
     const addDevice = async () => {
-        await api.post("/devices", newDevice);
-        setNewDevice({ name: "", maxConsumption: 0 });
+        await api.post("/device", newDevice);
+        setNewDevice({ name: "", maximumConsumption: 0.0, yearOfManufacture: 2010});
         loadAll();
     };
 
-    const deleteUser = async (id) => { await api.delete(`/users/${id}`); loadAll(); };
-    const deleteDevice = async (id) => { await api.delete(`/devices/${id}`); loadAll(); };
+    const deleteUser = async (id) => { await api.delete(`/user/${id}`); loadAll(); };
+    const deleteDevice = async (id) => { await api.delete(`/device/${id}`); loadAll(); };
 
     const assign = async () => {
-        await api.post(`/users/${assignUser}/devices`, { deviceIds: assignDevices });
+        await api.post(`/user/${assignUser}/device`, { deviceIds: assignDevices });
         alert("Assigned successfully!");
     };
 
     return (
         <div className="page-center">
             <div className="card large-card">
-                <h2 className="title">Admin Dashboard 💼</h2>
+                <h2 className="title">Admin Dashboard</h2>
 
                 <section>
                     <h3>Users</h3>
                     <ul>
                         {users.map(u => (
                             <li key={u.id}>
-                                {u.username} ({u.role})
-                                <button className="small-btn" onClick={() => deleteUser(u.id)}>❌</button>
+                                {u.username} {u.address} {u.age} {u.password} ({u.role})
+                                <button className="small-btn" onClick={() => deleteUser(u.id)}>delete</button>
                             </li>
                         ))}
                     </ul>
-                    <input className="input" placeholder="Username" value={newUser.username}
-                           onChange={e => setNewUser({...newUser, username:e.target.value})}/>
-                    <select className="input" value={newUser.role}
-                            onChange={e => setNewUser({...newUser, role:e.target.value})}>
-                        <option value="CLIENT">Client</option>
+                    <input className="input" placeholder="Username" value={newUser.username} onChange={e => setNewUser({...newUser, username:e.target.value})}/>
+                    <input className="input" placeholder="Address" value={newUser.address} onChange={e => setNewUser({...newUser, address:e.target.value})} />
+                    <input className="input" placeholder="Age" value={newUser.age} onChange={e => setNewUser({...newUser, age:e.target.value})} />
+                    <input className="input" placeholder="Password" value={newUser.password} onChange={e => setNewUser({...newUser, password:e.target.value})} />
+                    <select className="input" value={newUser.role} onChange={e => setNewUser({...newUser, role:e.target.value})}>
+                        <option value="USER">User</option>
                         <option value="ADMIN">Admin</option>
                     </select>
                     <button className="button" onClick={addUser}>Add User</button>
@@ -71,16 +72,18 @@ export default function AdminDashboard() {
                     <ul>
                         {devices.map(d => (
                             <li key={d.id}>
-                                {d.name} – {d.maxConsumption}W
-                                <button className="small-btn" onClick={() => deleteDevice(d.id)}>❌</button>
+                                {d.name} {d.maximumConsumption} {d.yearOfManufacture} W
+                                <button className="small-btn" onClick={() => deleteDevice(d.id)}>delete</button>
                             </li>
                         ))}
                     </ul>
                     <input className="input" placeholder="Device name" value={newDevice.name}
                            onChange={e => setNewDevice({...newDevice, name:e.target.value})}/>
-                    <input className="input" type="number" placeholder="Max consumption"
-                           value={newDevice.maxConsumption}
-                           onChange={e => setNewDevice({...newDevice, maxConsumption:e.target.value})}/>
+                    <input className="input" placeholder="Maximum Consumption" value={newDevice.maximumConsumption}
+                           onChange={e => setNewDevice({...newDevice, maximumConsumption:e.target.value})}/>
+                    <input className="input" placeholder="Year of Manufacture" value={newDevice.yearOfManufacture}
+                           onChange={e => setNewDevice({...newDevice, yearOfManufacture:e.target.value})}/>
+
                     <button className="button" onClick={addDevice}>Add Device</button>
                 </section>
 

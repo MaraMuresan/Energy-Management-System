@@ -14,7 +14,7 @@ export default function LoginPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await api.post("/auth/login", form);
+            const res = await api.post("/authentication/login", form);
             const token = res.data.token || res.data;
             localStorage.setItem("token", token);
             const decoded = jwtDecode(token);
@@ -28,7 +28,7 @@ export default function LoginPage() {
     return (
         <div className="page-center">
             <div className="card pink-card">
-                <h2 className="title">Welcome back 💖</h2>
+                <h2 className="title">Welcome back</h2>
                 <form onSubmit={handleSubmit}>
                     <input
                         className="input"

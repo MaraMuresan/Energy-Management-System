@@ -123,7 +123,6 @@ services:
       - "traefik.enable=true"
       - "traefik.http.middlewares.auth.forwardauth.address=http://authentication_spring:8083/authentication/validate"
       - "traefik.http.middlewares.auth.forwardauth.trustForwardHeader=true"
-      - "traefik.http.middlewares.auth.forwardauth.authResponseHeaders=Authorization"
       - "traefik.http.middlewares.auth.forwardauth.authRequestHeaders=Authorization"
     networks:
       - backend
@@ -135,5 +134,3 @@ volumes:
 
 networks:
   backend:
-    driver: bridge
-

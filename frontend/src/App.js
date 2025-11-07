@@ -1,19 +1,19 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import loginPage from "./auth/loginPage";
-import registerPage from "./auth/registerPage";
-import adminDashboard from "./admin/adminDashboard";
-import userDashboard from "./user/userDashboard";
+import LoginPage from "./auth/LoginPage";
+import RegisterPage from "./auth/RegisterPage";
+import AdminDashboard from "./admin/AdminDashboard";
+import UserDashboard from "./user/UserDashboard";
 
 export default function App() {
   return (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Navigate to="/login" />} />
-          <Route path="/login" element={<loginPage />} />
-          <Route path="/register" element={<registerPage />} />
-          <Route path="/admin" element={<adminDashboard />} />
-          <Route path="/user" element={<userDashboard />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/user" element={<UserDashboard />} />
         </Routes>
       </BrowserRouter>
   );

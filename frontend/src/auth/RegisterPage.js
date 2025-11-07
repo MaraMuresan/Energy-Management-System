@@ -5,7 +5,7 @@ import "../index.css";
 
 export default function RegisterPage() {
     const navigate = useNavigate();
-    const [form, setForm] = useState({ username: "", password: "", role: "USER" });
+    const [form, setForm] = useState({ username: "", address: "", age: 0, password: "", role: "USER" });
     const [error, setError] = useState("");
 
     const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
@@ -13,7 +13,7 @@ export default function RegisterPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await api.post("/auth/register", form);
+            await api.post("/authentication/register", form);
             navigate("/login");
         } catch {
             setError("Registration failed. Try again.");
@@ -23,9 +23,11 @@ export default function RegisterPage() {
     return (
         <div className="page-center">
             <div className="card pink-card">
-                <h2 className="title">Create account ✨</h2>
+                <h2 className="title">Create account</h2>
                 <form onSubmit={handleSubmit}>
                     <input className="input" name="username" placeholder="Username" value={form.username} onChange={handleChange} />
+                    <input className="input" type="address" name="address" placeholder="Address" value={form.address} onChange={handleChange} />
+                    <input className="input" type="age" name="age" placeholder="Age" value={form.age} onChange={handleChange} />
                     <input className="input" type="password" name="password" placeholder="Password" value={form.password} onChange={handleChange} />
                     <select className="input" name="role" value={form.role} onChange={handleChange}>
                         <option value="USER">User</option>
