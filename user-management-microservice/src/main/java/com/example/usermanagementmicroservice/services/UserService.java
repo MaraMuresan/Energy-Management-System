@@ -103,8 +103,8 @@ public class UserService {
         LOGGER.debug("User with id {} was deleted from db", user.get().getId());
 
         //rest send request to device
-        String url = "http://device_spring:8082/internalUser/" + id;
-        //String url = "http://traefik/device/internalUser/" + id;
+        //String url = "http://device_spring:8082/internalUser/" + id;
+        String url = "http://traefik/device/internalUser/" + id;
         RestTemplate restTemplate = new RestTemplate();
 
         try {
@@ -124,8 +124,8 @@ public class UserService {
         );
 
         try {
-            restTemplate.postForObject("http://device_spring:8082/internalUser", payload, Void.class);
-            //restTemplate.postForObject("http://traefik/device/internalUser", payload, Void.class);
+            //restTemplate.postForObject("http://device_spring:8082/internalUser", payload, Void.class);
+            restTemplate.postForObject("http://traefik/device/internalUser", payload, Void.class);
             LOGGER.debug("Synced user replica for id {}", user.getId());
         } catch (Exception e) {
             LOGGER.error("Failed to sync user replica: {}", e.getMessage());

@@ -36,33 +36,35 @@ public class AuthenticationController {
     }
 
     @GetMapping("/validate")
-    public ResponseEntity<Void> validate(@RequestHeader Map<String, String> headers) {
+    public ResponseEntity<Void> validate(
+            @RequestHeader(value = "Authorization", required = false) String authHeader,
+            HttpServletRequest request) {
         System.out.println("---- VALIDATE CALLED ----");
-        headers.forEach((k, v) -> System.out.println(k + ": " + v));
+        System.out.println("Authorization header: " + authHeader);
 
-        String header = headers.getOrDefault("authorization",
-                headers.getOrDefault("Authorization",
-                        headers.getOrDefault("bearer", headers.get("Bearer"))));
-
-        if (header == null) {
+        if (authHeader == null || authHeader.isBlank()) {
             System.out.println("No Authorization header found!");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .header("Content-Length", "0")
+                    .build();
         }
 
-        if (!header.startsWith("Bearer ")) {
-            header = "Bearer " + header;
-        }
-
-        String token = header.substring(7).trim();
+        String token = authHeader.replace("Bearer", "").trim();
         boolean valid = authenticationService.validate(token);
 
         if (valid) {
             System.out.println("Token valid, returning 204");
-            return ResponseEntity.noContent().build();
+            // explicitly remove body and content headers
+            return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                    .header("Content-Length", "0")
+                    .build();
         } else {
             System.out.println("Token invalid, returning 401");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .header("Content-Length", "0")
+                    .build();
         }
     }
+
 
 }

@@ -62,7 +62,9 @@ public class AuthenticationService {
 
         try {
             RestTemplate restTemplate = new RestTemplate();
-            String url = "http://traefik/user";
+            String url = "http://traefik/user/internal";
+            //String url = "http://traefik/user";
+            //String url =  "http://user_spring:8081/user";
 
             Map<String, Object> userPayload = Map.of(
                     "id", user.getId(),
@@ -75,6 +77,10 @@ public class AuthenticationService {
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
+
+            //String token = jwtUtils.generateToken(user.getId(), user.getUsername(), user.getRole().name());
+            //headers.set("Authorization", "Bearer " + token);
+
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(userPayload, headers);
 
             ResponseEntity<String> response =
