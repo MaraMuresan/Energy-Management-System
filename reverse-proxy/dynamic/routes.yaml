@@ -1,0 +1,71 @@
+http:
+  routers:
+    authentication:
+      rule: "PathPrefix(`/authentication`)"
+      service: authentication-service
+      entryPoints: ["web"]
+      middlewares: ["cors@file"]
+
+    user:
+      rule: "PathPrefix(`/user`)"
+      service: user-service
+      entryPoints: ["web"]
+      middlewares: ["auth@file", "cors@file"]
+
+    user-internal:
+      rule: "PathPrefix(`/user/internal`)"
+      service: user-service
+      entryPoints: ["web"]
+      middlewares: ["cors@file"]  # bypass JWT for internal sync
+
+    device:
+      rule: "PathPrefix(`/device`)"
+      service: device-service
+      entryPoints: ["web"]
+      middlewares: ["auth@file", "cors@file"]
+
+    device-internal:
+      rule: "PathPrefix(`/device/internalUser`)"
+      service: device-service
+      entryPoints: ["web"]
+      middlewares: ["cors@file"]
+
+  middlewares:
+    auth:
+      forwardAuth:
+        address: "http://authentication_spring:8083/authentication/validate"
+        trustForwardHeader: true
+        authRequestHeaders:
+          - "Authorization"
+
+    cors:
+      headers:
+        accessControlAllowOriginList:
+          - "http://localhost:3000" 
+        accessControlAllowMethods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+        accessControlAllowHeaders:
+          - Authorization
+          - Content-Type
+        accessControlAllowCredentials: true
+        accessControlExposeHeaders:
+          - Authorization
+
+  services:
+    authentication-service:
+      loadBalancer:
+        servers:
+          - url: "http://authentication_spring:8083"
+
+    user-service:
+      loadBalancer:
+        servers:
+          - url: "http://user_spring:8081"
+
+    device-service:
+      loadBalancer:
+        servers:
+          - url: "http://device_spring:8082"

@@ -35,12 +35,23 @@ public class AuthenticationController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/validate")
+    @RequestMapping(
+            value = "/validate",
+            method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS, RequestMethod.HEAD}
+    )
     public ResponseEntity<Void> validate(
             @RequestHeader(value = "Authorization", required = false) String authHeader,
-            HttpServletRequest request) {
+            HttpServletRequest request
+    ) {
         System.out.println("---- VALIDATE CALLED ----");
+        System.out.println("Method: " + request.getMethod());
         System.out.println("Authorization header: " + authHeader);
+
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod()) || "HEAD".equalsIgnoreCase(request.getMethod())) {
+            return ResponseEntity.ok()
+                    .header("Content-Length", "0")
+                    .build();
+        }
 
         if (authHeader == null || authHeader.isBlank()) {
             System.out.println("No Authorization header found!");
@@ -53,9 +64,8 @@ public class AuthenticationController {
         boolean valid = authenticationService.validate(token);
 
         if (valid) {
-            System.out.println("Token valid, returning 204");
-            // explicitly remove body and content headers
-            return ResponseEntity.status(HttpStatus.NO_CONTENT)
+            System.out.println("Token valid, returning 204 No Content");
+            return ResponseEntity.noContent()
                     .header("Content-Length", "0")
                     .build();
         } else {
@@ -65,6 +75,9 @@ public class AuthenticationController {
                     .build();
         }
     }
+
+
+
 
 
 }
