@@ -1,104 +1,104 @@
 version: "3.9"
 
 services:
-  user_spring:
+  user-spring:
     build: ./user-management-microservice
     image: user-management-microservice
-    container_name: user_spring
+    container_name: user-spring
     ports:
       - "8081:8081"
     environment:
-      DB_IP: user_postgres_db
+      DB_IP: user-postgres-db
     depends_on:
-      user_postgres_db:
+      user-postgres-db:
         condition: service_healthy
     networks:
-      - backend
+      - backend-system
     labels:
       - "traefik.enable=true"
 
-  user_postgres_db:
+  user-postgres-db:
     image: postgres:16
-    container_name: user_postgres_db
+    container_name: user-postgres-db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: user_db
+      POSTGRES_DB: user-db
     volumes:
-      - user_pgdata:/var/lib/postgresql/data
+      - user-pgdata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 5s
       retries: 10
     networks:
-      - backend
+      - backend-system
 
-  device_spring:
+  device-spring:
     build: ./device-management-microservice
     image: device-management-microservice
-    container_name: device_spring
+    container_name: device-spring
     ports:
       - "8082:8082"
     environment:
-      DB_IP: device_postgres_db
+      DB_IP: device-postgres-db
     depends_on:
-      device_postgres_db:
+      device-postgres-db:
         condition: service_healthy
     networks:
-      - backend
+      - backend-system
     labels:
       - "traefik.enable=true"
 
-  device_postgres_db:
+  device-postgres-db:
     image: postgres:16
-    container_name: device_postgres_db
+    container_name: device-postgres-db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: device_db
+      POSTGRES_DB: device-db
     volumes:
-      - device_pgdata:/var/lib/postgresql/data
+      - device-pgdata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 5s
       retries: 10
     networks:
-      - backend
+      - backend-system
 
-  authentication_spring:
+  authentication-spring:
     build: ./authentication-microservice
     image: authentication-microservice
-    container_name: authentication_spring
+    container_name: authentication-spring
     ports:
       - "8083:8083"
     environment:
-      DB_IP: authentication_postgres_db
+      DB_IP: authentication-postgres-db
     depends_on:
-      authentication_postgres_db:
+      authentication-postgres-db:
         condition: service_healthy
     networks:
-      - backend
+      - backend-system
     labels:
       - "traefik.enable=true"
 
-  authentication_postgres_db:
+  authentication-postgres-db:
     image: postgres:16
-    container_name: authentication_postgres_db
+    container_name: authentication-postgres-db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: user_credentials_db
+      POSTGRES_DB: user-credentials-db
     volumes:
-      - authentication_pgdata:/var/lib/postgresql/data
+      - authentication-pgdata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 5s
       retries: 10
     networks:
-      - backend
+      - backend-system
 
   traefik:
     image: traefik:v3.0
@@ -112,15 +112,15 @@ services:
       - "./reverse-proxy/traefik.yaml:/etc/traefik/traefik.yml:ro"
       - "./reverse-proxy/dynamic:/etc/traefik/dynamic:ro"
     networks:
-      - backend
+      - backend-system
     labels:
       - "traefik.enable=true"
 
 volumes:
-  user_pgdata:
-  device_pgdata:
-  authentication_pgdata:
+  user-pgdata:
+  device-pgdata:
+  authentication-pgdata:
 
 networks:
-  backend:
+  backend-system:
     driver: bridge

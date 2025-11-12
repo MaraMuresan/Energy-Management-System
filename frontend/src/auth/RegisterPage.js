@@ -15,8 +15,8 @@ export default function RegisterPage() {
         try {
             await api.post("/authentication/register", form);
             navigate("/login");
-        } catch {
-            setError("Registration failed. Try again.");
+        }  catch (err) {
+            setError(err.response?.data || "Registration failed. Try again.");
         }
     };
 

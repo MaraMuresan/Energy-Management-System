@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.UUID;
 
 @Entity
-@Table(name = "user_credentials")
+@Table(name = "user-credentials")
 public class UserCredentials implements Serializable{
 
     private static final long serialVersionUID = 1L;

@@ -7,7 +7,7 @@ import java.io.Serializable;
         import java.util.UUID;
 
 @Entity
-@Table(name = "user_replica")
+@Table(name = "user-replica")
 public class UserReplica implements Serializable {
 
     @Id
