@@ -100,6 +100,16 @@ services:
     networks:
       - backend-system
 
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - traefik
+    networks:
+      - backend-system
+
   traefik:
     image: traefik:v3.0
     container_name: traefik
