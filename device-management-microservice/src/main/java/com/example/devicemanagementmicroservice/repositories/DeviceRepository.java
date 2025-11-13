@@ -24,4 +24,9 @@ public interface DeviceRepository extends JpaRepository<Device, UUID> {
             "WHERE d.name = :name " +
             "AND d.yearOfManufacture >= 2022  ")
     Optional<Device> findNewDevicesByName(@Param("name") String name);
+
+    @Query(value = "SELECT d " +
+            "FROM Device d " +
+            "WHERE d.userReplica.id = :userId ")
+    List<Device> findByUserId(@Param("userId") UUID userId);
 }

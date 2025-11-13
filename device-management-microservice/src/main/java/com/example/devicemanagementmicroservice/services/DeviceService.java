@@ -49,6 +49,13 @@ public class DeviceService {
         return DeviceBuilder.toDeviceDTO(deviceOptional.get());
     }
 
+    public List<DeviceDTO> findDevicesByUserId(UUID userId) {
+        List<Device> devices = deviceRepository.findByUserId(userId);
+        return devices.stream()
+                .map(DeviceBuilder::toDeviceDTO)
+                .collect(Collectors.toList());
+    }
+
     public UUID insert(DeviceDetailsDTO deviceDTO) {
         Device device = DeviceBuilder.toEntity(deviceDTO);
 

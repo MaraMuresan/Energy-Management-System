@@ -1,6 +1,5 @@
 package com.example.usermanagementmicroservice.services;
 
-import com.example.usermanagementmicroservice.entities.enums.Role;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
@@ -28,10 +27,10 @@ public class UserServiceIntegrationTests extends UserManagementMicroserviceTestC
 
     @Test
     public void testInsertCorrectWithGetById() {
-        UserDetailsDTO u = new UserDetailsDTO("John", "Somewhere Else street", 22, "MyPassword1234", Role.USER);
+        UserDetailsDTO u = new UserDetailsDTO("John", "Somewhere Else street", 22);
         UUID insertedID = userService.insert(u);
 
-        UserDTO insertedUser = new UserDTO(insertedID, u.getUsername(), u.getAge(), u.getRole());
+        UserDTO insertedUser = new UserDTO(insertedID, u.getUsername(), u.getAddress(), u.getAge());
         UserDTO fetchedUser = userService.findUserById(insertedID);
 
         assertEquals("Test Inserted User", insertedUser, fetchedUser);
@@ -39,7 +38,7 @@ public class UserServiceIntegrationTests extends UserManagementMicroserviceTestC
 
     @Test
     public void testInsertCorrectWithGetAll() {
-        UserDetailsDTO u = new UserDetailsDTO("John", "Somewhere Else street", 22, "MyPassword1234", Role.USER);
+        UserDetailsDTO u = new UserDetailsDTO("John", "Somewhere Else street", 22);
         userService.insert(u);
 
         List<UserDTO> userDTOList = userService.findUsers();

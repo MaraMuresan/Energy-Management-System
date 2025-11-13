@@ -7,6 +7,8 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,6 +42,15 @@ public class DeviceController {
     public ResponseEntity<DeviceDTO> getDevice(@PathVariable("id") UUID deviceId) {
         DeviceDTO dto = deviceService.findDeviceById(deviceId);
         return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<List<DeviceDTO>> getMyDevices(@AuthenticationPrincipal Jwt jwt) {
+        String userIdStr = jwt.getClaim("id");
+        UUID userId = UUID.fromString(userIdStr);
+
+        List<DeviceDTO> devices = deviceService.findDevicesByUserId(userId);
+        return new ResponseEntity<>(devices, HttpStatus.OK);
     }
 
     @PutMapping(value = "/{id}")

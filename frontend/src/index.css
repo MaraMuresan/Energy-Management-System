@@ -24,5 +24,5 @@ body {
 .button:hover { opacity: 0.9; }
 .link { color: #ff69b4; text-decoration: none; }
 .error { color: red; }
-.small-btn { margin-left: 10px; background: transparent; border: none; cursor: pointer; }
+.small-btn { margin-left: 10px; background: transparent; border: none; cursor: pointer; color: #ff69b4;}
 .checkbox-list label { display: inline-block; margin: 5px 10px; }

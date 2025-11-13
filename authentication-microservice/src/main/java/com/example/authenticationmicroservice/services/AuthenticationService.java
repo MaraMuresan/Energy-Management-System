@@ -57,42 +57,52 @@ public class AuthenticationService {
         user.setRole(req.getRole());
 
         repository.save(user);
-
         LOGGER.debug("User registered successfully with id: {}", user.getId());
 
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://traefik/user/internal";
+
+        Map<String, Object> userPayload = Map.of(
+                "id", user.getId(),
+                "username", req.getUsername(),
+                "address", req.getAddress(),
+                "age", req.getAge(),
+                "password", encryptedPassword,
+                "role", req.getRole()
+        );
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(userPayload, headers);
+
         try {
-            RestTemplate restTemplate = new RestTemplate();
-            String url = "http://traefik/user/internal";
-            //String url = "http://traefik/user";
-            //String url =  "http://user_spring:8081/user";
-
-            Map<String, Object> userPayload = Map.of(
-                    "id", user.getId(),
-                    "username", req.getUsername(),
-                    "address", req.getAddress(),
-                    "age", req.getAge(),
-                    "password", encryptedPassword,
-                    "role", req.getRole()
-            );
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-
-            //String token = jwtUtils.generateToken(user.getId(), user.getUsername(), user.getRole().name());
-            //headers.set("Authorization", "Bearer " + token);
-
-            HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(userPayload, headers);
-
-            ResponseEntity<String> response =
-                    restTemplate.postForEntity(url, requestEntity, String.class);
-
+            ResponseEntity<String> response = restTemplate.postForEntity(url, requestEntity, String.class);
             LOGGER.info("User created in User microservice: {}", response.getStatusCode());
+        } catch (org.springframework.web.client.HttpClientErrorException e) {
+            String body = e.getResponseBodyAsString();
+            LOGGER.error("User microservice rejected user creation: {}", body);
+
+            repository.delete(user);
+
+            String forwardedMsg = body;
+            try {
+                com.fasterxml.jackson.databind.JsonNode node =
+                        new com.fasterxml.jackson.databind.ObjectMapper().readTree(body);
+                if (node.has("message")) {
+                    forwardedMsg = node.get("message").asText();
+                }
+            } catch (Exception ignore) { }
+
+            throw new ParameterValidationException(forwardedMsg);
         } catch (Exception e) {
-            LOGGER.warn("Failed to create user in User microservice: {}", e.getMessage());
+            LOGGER.error("Unexpected error contacting User microservice: {}", e.getMessage());
+            repository.delete(user);
+            throw new ParameterValidationException("Unexpected error: " + e.getMessage());
         }
 
         return user.getId();
     }
+
 
     public JwtResponseDTO login(LoginRequestDTO req) {
         Optional<UserCredentials> userOptional = repository.findByUsername(req.getUsername());

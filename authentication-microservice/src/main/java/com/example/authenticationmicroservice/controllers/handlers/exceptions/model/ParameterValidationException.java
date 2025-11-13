@@ -10,6 +10,6 @@ public class ParameterValidationException extends CustomException {
     private static final HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
 
     public ParameterValidationException(String resource) {
-        super(MESSAGE, httpStatus, resource, new ArrayList<>());
+        super(resource, httpStatus, MESSAGE, new ArrayList<>());
     }
 }

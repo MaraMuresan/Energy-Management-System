@@ -43,27 +43,32 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        List<ObjectError> errs = ex.getBindingResult().getAllErrors();
-        List<String> details = new ArrayList<>();
-        for (ObjectError err : errs) {
-            String fieldName = ((FieldError) err).getField();
-            String errorMessage = err.getDefaultMessage();
-            details.add(fieldName + ":" + errorMessage);
-        }
-        ExceptionHandlerResponseDTO errorInformation = new ExceptionHandlerResponseDTO(ex.getParameter().getParameterName(),
-                HttpStatus.valueOf(status.value()).getReasonPhrase(),
-                status.value(),
-                MethodArgumentNotValidException.class.getSimpleName(),
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex,
+            HttpHeaders headers,
+            HttpStatusCode status,
+            WebRequest request) {
+
+        List<String> details = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(FieldError::getDefaultMessage)
+                .toList();
+
+        String message = details.size() == 1 ? details.get(0) : "Validation failed";
+
+        HttpStatus http = HttpStatus.BAD_REQUEST;
+
+        ExceptionHandlerResponseDTO body = new ExceptionHandlerResponseDTO(
+                "userDTO",
+                http.getReasonPhrase(),
+                http.value(),
+                message,
                 details,
-                request.getDescription(false));
-        return handleExceptionInternal(
-                ex,
-                errorInformation,
-                new HttpHeaders(),
-                status,
-                request
+                request.getDescription(false)
         );
+
+        return handleExceptionInternal(ex, body, new HttpHeaders(), http, request);
     }
 
     @ExceptionHandler(value = {ResourceNotFoundException.class, DuplicateResourceException.class, EntityValidationException.class})

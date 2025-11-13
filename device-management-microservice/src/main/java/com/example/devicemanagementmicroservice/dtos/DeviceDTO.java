@@ -1,5 +1,6 @@
 package com.example.devicemanagementmicroservice.dtos;
 
+import com.example.devicemanagementmicroservice.dtos.validators.annotation.YearOfManufactureLimit;
 import com.example.devicemanagementmicroservice.entities.UserReplica;
 
 import java.util.Objects;
@@ -9,17 +10,20 @@ public class DeviceDTO {
     private UUID id;
     private String name;
     private double maximumConsumption;
+    private int yearOfManufacture;
 
     private UserReplicaDTO userReplicaDTO;
+
 
     public DeviceDTO() {
     }
 
-    public DeviceDTO(UUID id, String name, double maximumConsumption, UserReplicaDTO userReplicaDTO) {
+    public DeviceDTO(UUID id, String name, double maximumConsumption, int yearOfManufacture, UserReplicaDTO userReplicaDTO) {
         this.id = id;
         this.name = name;
         this.maximumConsumption = maximumConsumption;
         this.userReplicaDTO = userReplicaDTO;
+        this.yearOfManufacture = yearOfManufacture;
     }
 
     public UUID getId() {
@@ -44,6 +48,14 @@ public class DeviceDTO {
 
     public void setMaximumConsumption(double maximumConsumption) {
         this.maximumConsumption = maximumConsumption;
+    }
+
+    public int getYearOfManufacture() {
+        return yearOfManufacture;
+    }
+
+    public void setYearOfManufacture(int yearOfManufacture) {
+        this.yearOfManufacture = yearOfManufacture;
     }
 
     public UserReplicaDTO getUserReplicaDTO() {

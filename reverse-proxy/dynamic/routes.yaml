@@ -10,7 +10,7 @@ http:
       rule: "PathPrefix(`/user`)"
       service: user-service
       entryPoints: ["web"]
-      middlewares: ["auth@file", "cors@file"]
+      middlewares: ["cors@file", "auth@file"]
 
     user-internal:
       rule: "PathPrefix(`/user/internal`)"
@@ -22,7 +22,7 @@ http:
       rule: "PathPrefix(`/device`)"
       service: device-service
       entryPoints: ["web"]
-      middlewares: ["auth@file", "cors@file"]
+      middlewares: ["cors@file", "auth@file"]
 
     device-internal:
       rule: "PathPrefix(`/device/internalUser`)"
@@ -47,6 +47,7 @@ http:
           - POST
           - PUT
           - DELETE
+          - OPTIONS
         accessControlAllowHeaders:
           - Authorization
           - Content-Type

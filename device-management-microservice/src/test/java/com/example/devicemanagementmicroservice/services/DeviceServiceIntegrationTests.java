@@ -36,7 +36,7 @@ public class DeviceServiceIntegrationTests extends DeviceManagementMicroserviceT
             userReplicaDTO = new UserReplicaDTO(d.getUserId(), null);
         }
 
-        DeviceDTO insertedDevice = new DeviceDTO(insertedID, d.getName(), d.getMaximumConsumption(), userReplicaDTO);
+        DeviceDTO insertedDevice = new DeviceDTO(insertedID, d.getName(), d.getMaximumConsumption(), d.getYearOfManufacture(), userReplicaDTO);
         DeviceDTO fetchedDevice = deviceService.findDeviceById(insertedID);
 
         assertEquals("Test Inserted Device", insertedDevice, fetchedDevice);

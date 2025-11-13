@@ -22,7 +22,7 @@ public class DeviceBuilder {
                     device.getUserReplica().getUsername() != null ? device.getUserReplica().getUsername() : "Unknown"
             );
         }
-        return new DeviceDTO(device.getId(), device.getName(), device.getMaximumConsumption(), userReplicaDTO);
+        return new DeviceDTO(device.getId(), device.getName(), device.getMaximumConsumption(), device.getYearOfManufacture(), userReplicaDTO);
     }
 
     public static Device toEntity(DeviceDetailsDTO deviceDetailsDTO) {

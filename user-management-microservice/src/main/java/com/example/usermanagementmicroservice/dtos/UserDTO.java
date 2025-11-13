@@ -1,24 +1,22 @@
 package com.example.usermanagementmicroservice.dtos;
 
-import com.example.usermanagementmicroservice.entities.enums.Role;
-
 import java.util.Objects;
 import java.util.UUID;
 
 public class UserDTO {
     private UUID id;
     private String username;
+    private String address;
     private int age;
-    private Role role;
 
     public UserDTO() {
     }
 
-    public UserDTO(UUID id, String username, int age, Role role) {
+    public UserDTO(UUID id, String username, String address, int age) {
         this.id = id;
         this.username = username;
+        this.address = address;
         this.age = age;
-        this.role = role;
     }
 
     public UUID getId() {
@@ -37,6 +35,14 @@ public class UserDTO {
         this.username = username;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public int getAge() {
         return age;
     }
@@ -45,26 +51,18 @@ public class UserDTO {
         this.age = age;
     }
 
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserDTO userDTO = (UserDTO) o;
         return age == userDTO.age &&
-                Objects.equals(username, userDTO.username) &&
-                role == userDTO.role;
+                Objects.equals(address,userDTO.address) &&
+                Objects.equals(username, userDTO.username);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(username, age, role);
+        return Objects.hash(username, address, age);
     }
 }

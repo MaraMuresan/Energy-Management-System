@@ -9,14 +9,15 @@ public class UserBuilder {
     }
 
     public static UserDTO toUserDTO(User user) {
-        return new UserDTO(user.getId(), user.getUsername(), user.getAge(), user.getRole());
+        return new UserDTO(user.getId(), user.getUsername(), user.getAddress(), user.getAge());
     }
 
     public static User toEntity(UserDetailsDTO userDetailsDTO) {
-        return new User(userDetailsDTO.getUsername(),
-                userDetailsDTO.getAddress(),
-                userDetailsDTO.getAge(),
-                userDetailsDTO.getPassword(),
-                userDetailsDTO.getRole());
+        User user = new User();
+        user.setId(userDetailsDTO.getId());
+        user.setUsername(userDetailsDTO.getUsername());
+        user.setAddress(userDetailsDTO.getAddress());
+        user.setAge(userDetailsDTO.getAge());
+        return user;
     }
 }

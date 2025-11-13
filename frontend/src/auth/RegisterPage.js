@@ -15,8 +15,23 @@ export default function RegisterPage() {
         try {
             await api.post("/authentication/register", form);
             navigate("/login");
-        }  catch (err) {
-            setError(err.response?.data || "Registration failed. Try again.");
+        } catch (err) {
+            const data = err.response?.data;
+            let msg = "Registration failed. Try again.";
+
+            if (data) {
+                if (typeof data === "string") {
+                    try {
+                        const parsed = JSON.parse(data);
+                        msg = parsed.message || parsed.error || parsed.detail || data;
+                    } catch {
+                        msg = data;
+                    }
+                } else {
+                    msg = data.message || data.error || data.detail || msg;
+                }
+            }
+            setError(msg);
         }
     };
 
@@ -26,8 +41,8 @@ export default function RegisterPage() {
                 <h2 className="title">Create account</h2>
                 <form onSubmit={handleSubmit}>
                     <input className="input" name="username" placeholder="Username" value={form.username} onChange={handleChange} />
-                    <input className="input" type="address" name="address" placeholder="Address" value={form.address} onChange={handleChange} />
-                    <input className="input" type="age" name="age" placeholder="Age" value={form.age} onChange={handleChange} />
+                    <input className="input" type="text" name="address" placeholder="Address" value={form.address} onChange={handleChange} />
+                    <input className="input" type="number" min="0" name="age" placeholder="Age" value={form.age} onChange={handleChange} />
                     <input className="input" type="password" name="password" placeholder="Password" value={form.password} onChange={handleChange} />
                     <select className="input" name="role" value={form.role} onChange={handleChange}>
                         <option value="USER">User</option>

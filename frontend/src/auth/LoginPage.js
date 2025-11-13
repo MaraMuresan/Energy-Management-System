@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../api/client";
-import { jwtDecode } from "jwt-decode";
 import "../index.css";
 
 export default function LoginPage() {
@@ -15,10 +14,9 @@ export default function LoginPage() {
         e.preventDefault();
         try {
             const res = await api.post("/authentication/login", form);
-            const token = res.data.token || res.data;
+            const { token, role } = res.data;
             localStorage.setItem("token", token);
-            const decoded = jwtDecode(token);
-            const role = Array.isArray(decoded.role) ? decoded.role[0] : decoded.role;
+            localStorage.setItem("role", role);
             navigate(role === "ADMIN" ? "/admin" : "/user");
         } catch {
             setError("Invalid username or password.");

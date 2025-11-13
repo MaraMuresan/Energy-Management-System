@@ -2,7 +2,6 @@ package com.example.usermanagementmicroservice.dtos;
 
 import com.example.usermanagementmicroservice.dtos.validators.annotation.AgeLimit;
 
-import com.example.usermanagementmicroservice.entities.enums.Role;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
@@ -23,31 +22,20 @@ public class UserDetailsDTO {
     @AgeLimit(limit = 18)
     private int age;
 
-    @NotNull
-    @NotBlank
-    private String password;
-
-    @NotNull
-    private Role role;
-
     public UserDetailsDTO() {
     }
 
-    public UserDetailsDTO(String username, String address, int age, String password, Role role) {
+    public UserDetailsDTO(String username, String address, int age) {
         this.username = username;
         this.address = address;
         this.age = age;
-        this.password = password;
-        this.role = role;
     }
 
-    public UserDetailsDTO(UUID id, String username, String address, int age, String password, Role role) {
+    public UserDetailsDTO(UUID id, String username, String address, int age) {
         this.id = id;
         this.username = username;
         this.address = address;
         this.age = age;
-        this.password = password;
-        this.role = role;
     }
 
     public UUID getId() {
@@ -80,21 +68,5 @@ public class UserDetailsDTO {
 
     public void setAge(int age) {
         this.age = age;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
     }
 }

@@ -1,6 +1,5 @@
 package com.example.usermanagementmicroservice.controllers;
 
-import com.example.usermanagementmicroservice.entities.enums.Role;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,7 @@ public class UserControllerUnitTest extends UserManagementMicroserviceTestConfig
     @Test
     public void insertUserTest() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
-        UserDetailsDTO userDTO = new UserDetailsDTO("John", "Somewhere Else street", 22, "MyPassword1234", Role.USER);
+        UserDetailsDTO userDTO = new UserDetailsDTO("John", "Somewhere Else street", 22);
 
         mockMvc.perform(post("/user")
                         .content(objectMapper.writeValueAsString(userDTO))
@@ -29,7 +28,7 @@ public class UserControllerUnitTest extends UserManagementMicroserviceTestConfig
     @Test
     public void insertUserTestFailsDueToAge() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
-        UserDetailsDTO userDTO = new UserDetailsDTO("John", "Somewhere Else street", 17, "MyPassword1234", Role.USER);
+        UserDetailsDTO userDTO = new UserDetailsDTO("John", "Somewhere Else street", 17);
 
         mockMvc.perform(post("/user")
                         .content(objectMapper.writeValueAsString(userDTO))
@@ -40,7 +39,7 @@ public class UserControllerUnitTest extends UserManagementMicroserviceTestConfig
     @Test
     public void insertUserTestFailsDueToNull() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
-        UserDetailsDTO userDTO = new UserDetailsDTO("John", null, 17, "MyPassword1234", Role.USER);
+        UserDetailsDTO userDTO = new UserDetailsDTO("John", null, 17);
 
         mockMvc.perform(post("/user")
                         .content(objectMapper.writeValueAsString(userDTO))

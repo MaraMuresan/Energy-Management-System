@@ -1,6 +1,5 @@
 package com.example.usermanagementmicroservice.entities;
 
-import com.example.usermanagementmicroservice.entities.enums.Role;
 import org.hibernate.annotations.GenericGenerator;
 
 import jakarta.persistence.*;
@@ -16,8 +15,6 @@ public class User implements Serializable{
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(columnDefinition = "uuid", updatable = false, nullable = false)
     private UUID id;
 
@@ -30,23 +27,14 @@ public class User implements Serializable{
     @Column(name = "age", nullable = false)
     private int age;
 
-    @Column(name = "password", nullable = false)
-    private String password;
-
-    @Column(name = "role", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Role role;
-
 
     public User() {
     }
 
-    public User(String username, String address, int age, String password, Role role) {
+    public User(String username, String address, int age) {
         this.username = username;
         this.address = address;
         this.age = age;
-        this.password = password;
-        this.role = role;
     }
 
     public UUID getId() {
@@ -79,22 +67,6 @@ public class User implements Serializable{
 
     public void setAge(int age) {
         this.age = age;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
     }
 
 }
