@@ -22,6 +22,16 @@ public class SecurityConfiguration {
                                 "/authentication/validate"
 
                         ).permitAll()
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
+                        .requestMatchers(
+                                "/authentication/swagger-ui/**",
+                                "/authentication/v3/api-docs/**",
+                                "/authentication/swagger-ui.html"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 );
         return http.build();
