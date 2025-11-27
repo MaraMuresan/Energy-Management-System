@@ -79,7 +79,7 @@ public class DeviceService {
         event.setEvent("DEVICE_CREATED");
         event.setId(device.getId());
         event.setName(device.getName());
-        devicePublisher.send(event);
+        devicePublisher.publish(event);
 
         return device.getId();
     }
@@ -112,7 +112,7 @@ public class DeviceService {
         event.setEvent("DEVICE_UPDATED");
         event.setId(deviceAfter.getId());
         event.setName(deviceAfter.getName());
-        devicePublisher.send(event);
+        devicePublisher.publish(event);
 
         return DeviceBuilder.toDeviceDTO(deviceAfter);
     }
@@ -131,6 +131,6 @@ public class DeviceService {
         DeviceReplicaDTO event = new DeviceReplicaDTO();
         event.setEvent("DEVICE_DELETED");
         event.setId(id);
-        devicePublisher.send(event);
+        devicePublisher.publish(event);
     }
 }

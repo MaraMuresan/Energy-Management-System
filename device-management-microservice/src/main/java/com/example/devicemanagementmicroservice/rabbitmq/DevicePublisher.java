@@ -12,7 +12,7 @@ public class DevicePublisher {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public void send(DeviceReplicaDTO dto) {
+    public void publish(DeviceReplicaDTO dto) {
         rabbitTemplate.convertAndSend(
                 RabbitMQConfig.SYNCHRONIZATION_BROKER,
                 dto
