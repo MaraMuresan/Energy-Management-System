@@ -2,10 +2,10 @@
 
 ## Overview
 
-This project implements an **Energy Management System** built using a **microservices architecture** that follows the **Request–Reply Communication Paradigm**.  
-It allows authenticated users to **monitor and manage smart energy metering devices** via a **web-based frontend**, with services communicating through **REST APIs** and deployed using **Docker containers**.
+This project implements an **Energy Management System** built using a **microservices architecture** that follows both the **Request–Reply Communication Paradigm** and the **Asynchronous Communication Paradigm**.  
+It allows authenticated users to **monitor, manage and observe the conumption of smart energy metering devices** via a **web-based frontend**, with services communicating through **REST APIs** and deployed using **Docker containers**.
 
-The system ensures **secure access**, **role-based authorization and authentication**, and **loose coupling** between services through an **API Gateway** built as a **Reverse Proxy**.
+The system ensures **secure access**, **role-based authorization and authentication**, and **loose coupling** between services through an **API Gateway** built as a **Reverse Proxy**. The application introduces **event-driven**, asynchronous communication through **RabbitMQ**, enabling **real-time streaming**, processing, and aggregation of device measurements.
 
 ## System Components
 
@@ -15,7 +15,7 @@ The system ensures **secure access**, **role-based authorization and authenticat
 - Features a **bright pink and pastel theme**.
 - Provides role-based pages:
   - **Admin Dashboard:** manage users, devices, and assign devices to users.
-  - **User (Client) Dashboard:** view devices assigned to their account.
+  - **User (Client) Dashboard:** view devices assigned to their account and check daily historical energy consumption for secfic devices.
 
 #### Start the Frontend
 

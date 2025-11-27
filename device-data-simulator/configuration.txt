@@ -1,0 +1,2 @@
+[simulator]
+device_id = 16901df9-24e8-42c5-9d26-31a807880028

@@ -9,9 +9,6 @@ WORKDIR /build
 # Copy only pom.xml first (for caching dependencies)
 COPY pom.xml .
 
-# Download dependencies (speeds up rebuilds)
-RUN mvn dependency:go-offline
-
 # Copy the rest of the source code
 COPY src ./src
 

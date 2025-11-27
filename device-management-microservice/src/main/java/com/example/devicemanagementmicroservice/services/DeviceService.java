@@ -6,6 +6,8 @@ import com.example.devicemanagementmicroservice.dtos.DeviceDetailsDTO;
 import com.example.devicemanagementmicroservice.dtos.builders.DeviceBuilder;
 import com.example.devicemanagementmicroservice.entities.Device;
 import com.example.devicemanagementmicroservice.entities.UserReplica;
+import com.example.devicemanagementmicroservice.rabbitmq.DevicePublisher;
+import com.example.devicemanagementmicroservice.rabbitmq.DeviceReplicaDTO;
 import com.example.devicemanagementmicroservice.repositories.DeviceRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,10 +28,13 @@ public class DeviceService {
     private final DeviceRepository deviceRepository;
     private final UserReplicaService userReplicaService;
 
+    private final DevicePublisher devicePublisher;
+
     @Autowired
-    public DeviceService(DeviceRepository deviceRepository, UserReplicaService userReplicaService) {
+    public DeviceService(DeviceRepository deviceRepository, UserReplicaService userReplicaService, DevicePublisher devicePublisher) {
         this.deviceRepository = deviceRepository;
         this.userReplicaService = userReplicaService;
+        this.devicePublisher = devicePublisher;
     }
 
     public List<DeviceDTO> findDevices() {
@@ -68,6 +73,14 @@ public class DeviceService {
 
         device = deviceRepository.save(device);
         LOGGER.debug("Device with id {} was inserted in db", device.getId());
+
+        // ASSIGNMENT 2 - PUBLISH TO QUEUE
+        DeviceReplicaDTO event = new DeviceReplicaDTO();
+        event.setEvent("DEVICE_CREATED");
+        event.setId(device.getId());
+        event.setName(device.getName());
+        devicePublisher.send(event);
+
         return device.getId();
     }
 
@@ -94,6 +107,13 @@ public class DeviceService {
         Device deviceAfter = deviceRepository.save(deviceBefore.get());
         LOGGER.debug("Device with id {} was updated in db", deviceAfter.getId());
 
+        // ASSIGNMENT 2 - PUBLISH TO QUEUE
+        DeviceReplicaDTO event = new DeviceReplicaDTO();
+        event.setEvent("DEVICE_UPDATED");
+        event.setId(deviceAfter.getId());
+        event.setName(deviceAfter.getName());
+        devicePublisher.send(event);
+
         return DeviceBuilder.toDeviceDTO(deviceAfter);
     }
 
@@ -106,5 +126,11 @@ public class DeviceService {
 
         deviceRepository.delete(device.get());
         LOGGER.debug("Device with id {} was deleted from db", device.get().getId());
+
+        // ASSIGNMENT 2 - PUBLISH TO QUEUE
+        DeviceReplicaDTO event = new DeviceReplicaDTO();
+        event.setEvent("DEVICE_DELETED");
+        event.setId(id);
+        devicePublisher.send(event);
     }
 }

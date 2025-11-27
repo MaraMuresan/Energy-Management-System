@@ -1,6 +1,86 @@
 version: "3.9"
 
 services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - backend-system
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+  
+  device-data-simulator:
+    build: ./device-data-simulator
+    image: device-data-simulator
+    container_name: device-data-simulator
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_USER: guest
+      RABBITMQ_PASSWORD: guest
+      RABBITMQ_PORT: 5672
+    networks:
+      - backend-system
+    labels:
+      - "traefik.enable=false"  
+
+  monitoring-spring:
+    build: ./monitoring-microservice
+    image: monitoring-microservice
+    container_name: monitoring-spring
+    ports:
+      - "8084:8084"
+    environment:
+      DB_IP: monitoring-postgres-db
+      DB_PORT: 5432
+      DB_DBNAME: monitoring-db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      RABBIT_HOST: rabbitmq
+      RABBIT_PORT: 5672
+      RABBIT_USER: guest
+      RABBIT_PASSWORD: guest
+      PORT: 8084
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      monitoring-postgres-db:
+        condition: service_healthy
+    networks:
+      - backend-system
+    labels:
+      - "traefik.enable=true"
+
+  monitoring-postgres-db:
+    image: postgres:16
+    container_name: monitoring-postgres-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: monitoring-db
+    volumes:
+      - monitoring-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - backend-system
+
   user-spring:
     build: ./user-management-microservice
     image: user-management-microservice
@@ -130,6 +210,8 @@ volumes:
   user-pgdata:
   device-pgdata:
   authentication-pgdata:
+  monitoring-pgdata:
+  rabbitmq-data:
 
 networks:
   backend-system:

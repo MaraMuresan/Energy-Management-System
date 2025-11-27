@@ -30,6 +30,18 @@ http:
       entryPoints: ["web"]
       middlewares: ["cors@file"]
 
+    monitoring:
+      rule: "PathPrefix(`/monitoring`)"
+      service: monitoring-service
+      entryPoints: ["web"]
+      middlewares: ["cors@file", "auth@file"]
+
+    monitoring-internal:
+      rule: "PathPrefix(`/monitoring/internalMonitoring`)"
+      service: monitoring-service
+      entryPoints: ["web"]
+      middlewares: ["cors@file"]
+
   middlewares:
     auth:
       forwardAuth:
@@ -70,3 +82,8 @@ http:
       loadBalancer:
         servers:
           - url: "http://device-spring:8082"
+    
+    monitoring-service:
+      loadBalancer:
+        servers:
+          - url: "http://monitoring-spring:8084"
