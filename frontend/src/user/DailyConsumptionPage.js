@@ -19,10 +19,12 @@ export default function ConsumptionPage() {
         try {
             const res = await api.get(`/monitoring/device/${deviceId}/day/${date}`);
 
-            const formatted = res.data.map(entry => ({
-                hour: `${entry.hour}:00`,
-                consumption: entry.consumption
-            }));
+            const formatted = res.data
+                .map(entry => ({
+                    hour: entry.hour,
+                    consumption: entry.consumption
+                }))
+                .sort((a, b) => a.hour - b.hour);
 
             setData(formatted);
             setError("");
@@ -37,7 +39,6 @@ export default function ConsumptionPage() {
             <div className="card large-card">
                 <h2 className="title">Daily Energy Consumption</h2>
 
-                {/* Date Picker */}
                 <div style={{ textAlign: "center", marginBottom: "20px" }}>
                     <input
                         type="date"
@@ -58,9 +59,16 @@ export default function ConsumptionPage() {
                         <ResponsiveContainer>
                             <LineChart data={data}>
                                 <CartesianGrid stroke="#ffb6c1" strokeDasharray="4 4" />
-                                <XAxis dataKey="hour" stroke="#ff69b4" />
+                                <XAxis
+                                    dataKey="hour"
+                                    tickFormatter={(h) => `${String(h).padStart(2, "0")}:00`}
+                                    stroke="#ff69b4"
+                                />
                                 <YAxis stroke="#ff69b4" />
-                                <Tooltip />
+                                <Tooltip
+                                    formatter={(value) => [`${value} kWh`, "Consumption"]}
+                                    labelFormatter={(h) => `Hour: ${h}:00`}
+                                />
                                 <Line
                                     type="monotone"
                                     dataKey="consumption"
