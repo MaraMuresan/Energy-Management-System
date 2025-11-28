@@ -4,6 +4,7 @@ import LoginPage from "./auth/LoginPage";
 import RegisterPage from "./auth/RegisterPage";
 import AdminDashboard from "./admin/AdminDashboard";
 import UserDashboard from "./user/UserDashboard";
+import DailyConsumptionPage from "./user/DailyConsumptionPage";
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/user" element={<UserDashboard />} />
+            <Route path="/user/energy" element={<DailyConsumptionPage />} />
         </Routes>
       </BrowserRouter>
   );
