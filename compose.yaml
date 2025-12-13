@@ -205,6 +205,20 @@ services:
       - backend-system
     labels:
       - "traefik.enable=true"
+    
+  websocket-spring:
+    build: ./websocket-microservice
+    image: websocket-microservice
+    container_name: websocket-spring
+    ports:
+      - "8085:8085"
+    environment:
+      GEMINI_API_KEY: AIzaSyCzpbLckJYkY_anngh3T8nKKGk9JgYISoQ
+      JWT_SECRET: mySuperSecretKeyForJwtEncryptionMustBeAtLeast32CharsLong123!
+    networks:
+      - backend-system
+    labels:
+      - "traefik.enable=true"
 
 volumes:
   user-pgdata:
@@ -216,3 +230,5 @@ volumes:
 networks:
   backend-system:
     driver: bridge
+
+    

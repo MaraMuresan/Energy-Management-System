@@ -26,3 +26,35 @@ body {
 .error { color: red; }
 .small-btn { margin-left: 10px; background: transparent; border: none; cursor: pointer; color: #ff69b4;}
 .checkbox-list label { display: inline-block; margin: 5px 10px; }
+.chat-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #ff69b4;
+  color: white;
+  border: none;
+  padding: 15px 18px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 16px;
+  box-shadow: 0 3px 10px rgba(255,105,180,0.5);
+}
+.chat-popup {
+  position: fixed;
+  bottom: 90px;
+  right: 20px;
+  width: 320px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(255,105,180,0.4);
+  display: flex;
+  flex-direction: column;
+}
+.chat-header { background: #ff69b4; color: white; padding: 10px; border-radius: 15px 15px 0 0; display: flex; justify-content: space-between; }
+.chat-close { background: transparent; border: none; color: white; cursor: pointer; }
+.chat-messages { padding: 10px; height: 230px; overflow-y: auto; }
+.chat-msg { margin-bottom: 8px; }
+.chat-msg.You { text-align: right; }
+.chat-input { padding: 10px; display: flex; gap: 5px; }
+.chat-options { padding: 10px; display: flex; justify-content: space-between; }
+

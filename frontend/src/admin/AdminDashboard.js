@@ -170,6 +170,7 @@ export default function AdminDashboard() {
     return (
         <div className="page-center">
             <div className="card large-card">
+                <a href="/admin/chat" className="button">Open Support Chat</a>
                 <h2 className="title">Admin Dashboard</h2>
 
                 <section>

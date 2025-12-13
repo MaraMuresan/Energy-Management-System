@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import api from "../api/client";
 import "../index.css";
 import DeviceTable from "../components/DeviceTable";
+import UserChatPopup from "./UserChatPopup";
 
 export default function UserDashboard() {
     const [devices, setDevices] = useState([]);
@@ -25,6 +26,9 @@ export default function UserDashboard() {
                     <DeviceTable devices={devices} />
                 )}
             </div>
+
+            <UserChatPopup />
+
         </div>
     );
 }

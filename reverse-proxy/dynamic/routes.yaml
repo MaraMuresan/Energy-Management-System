@@ -42,6 +42,12 @@ http:
       entryPoints: ["web"]
       middlewares: ["cors@file"]
 
+    websocket:
+      rule: "PathPrefix(`/websocket`)"
+      service: websocket-service
+      entryPoints: ["web"]
+      middlewares: ["cors@file"]
+
   middlewares:
     auth:
       forwardAuth:
@@ -87,3 +93,8 @@ http:
       loadBalancer:
         servers:
           - url: "http://monitoring-spring:8084"
+
+    websocket-service:
+      loadBalancer:
+        servers:
+          - url: "http://websocket-spring:8085"
