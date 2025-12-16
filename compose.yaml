@@ -215,6 +215,9 @@ services:
     environment:
       GEMINI_API_KEY: AIzaSyCzpbLckJYkY_anngh3T8nKKGk9JgYISoQ
       JWT_SECRET: mySuperSecretKeyForJwtEncryptionMustBeAtLeast32CharsLong123!
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
     networks:
       - backend-system
     labels:

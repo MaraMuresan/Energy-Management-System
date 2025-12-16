@@ -1,10 +1,13 @@
 package com.example.monitoringmicroservice.services;
 
 import com.example.monitoringmicroservice.controllers.handlers.exceptions.model.ResourceNotFoundException;
+import com.example.monitoringmicroservice.dtos.AlertNotificationDTO;
 import com.example.monitoringmicroservice.dtos.DeviceMeasurementDTO;
 import com.example.monitoringmicroservice.dtos.HourlyConsumptionDTO;
 import com.example.monitoringmicroservice.dtos.builders.HourlyConsumptionBuilder;
+import com.example.monitoringmicroservice.entities.DeviceReplica;
 import com.example.monitoringmicroservice.entities.HourlyConsumption;
+import com.example.monitoringmicroservice.rabbitmq.AlertPublisher;
 import com.example.monitoringmicroservice.repositories.HourlyConsumptionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,11 +26,13 @@ public class MonitoringService {
 
     private final HourlyConsumptionRepository repository;
     private final DeviceReplicaService deviceReplicaService;
+    private final AlertPublisher alertPublisher;
 
     @Autowired
-    public MonitoringService(HourlyConsumptionRepository repository, DeviceReplicaService deviceReplicaService) {
+    public MonitoringService(HourlyConsumptionRepository repository, DeviceReplicaService deviceReplicaService, AlertPublisher alertPublisher) {
         this.repository = repository;
         this.deviceReplicaService = deviceReplicaService;
+        this.alertPublisher = alertPublisher;
     }
 
     public void processMeasurement(DeviceMeasurementDTO dto) {
@@ -68,6 +73,28 @@ public class MonitoringService {
 
         LOGGER.info("Hour {} device {}: start={} current={} total={}",
                 hour, deviceId, startValue, currentValue, hourlyTotal);
+
+        DeviceReplica device = deviceReplicaService.findById(deviceId);
+
+        System.out.println(">>> [MON] Checking consumption: "
+                + "hourlyTotal=" + hourlyTotal
+                + ", max=" + device.getMaximumConsumption());
+
+        if (hourlyTotal > device.getMaximumConsumption()) {
+
+            AlertNotificationDTO alert = new AlertNotificationDTO(
+                    device.getUserId(),
+                    device.getId(),
+                    hourlyTotal,
+                    device.getMaximumConsumption(),
+                    "Hourly consumption exceeded the maximum allowed value",
+                    LocalDateTime.now()
+            );
+            alert.setEvent("ALERT_OVERCONSUMPTION");
+
+            System.out.println(">>> [MON] Publishing alert to NOTIFICATION_BROKER");
+            alertPublisher.publish(alert);
+        }
     }
 
     public List<HourlyConsumptionDTO> findAll() {

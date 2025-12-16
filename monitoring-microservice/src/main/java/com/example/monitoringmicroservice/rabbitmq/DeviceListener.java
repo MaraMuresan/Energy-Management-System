@@ -33,7 +33,7 @@ public class DeviceListener {
         switch (dto.getEvent()) {
             case "DEVICE_CREATED":
             case "DEVICE_UPDATED":
-                service.createOrUpdate(new DeviceReplica(dto.getId(), dto.getName()));
+                service.createOrUpdate(new DeviceReplica(dto.getId(), dto.getName(), dto.getMaximumConsumption(), dto.getUserId()));
                 break;
 
             case "DEVICE_DELETED":

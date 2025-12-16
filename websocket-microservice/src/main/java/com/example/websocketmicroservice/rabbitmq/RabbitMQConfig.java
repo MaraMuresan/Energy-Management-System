@@ -1,38 +1,26 @@
-package com.example.monitoringmicroservice.rabbitmq;
+package com.example.websocketmicroservice.rabbitmq;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.support.converter.MessageConverter;
-import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
 
-    public static final String DATA_COLLECTION_BROKER = "data-collection-broker";
-    public static final String SYNCHRONIZATION_BROKER = "synchronization-broker";
-
     public static final String NOTIFICATION_BROKER = "notification-broker";
-
-    @Bean
-    public Queue dataCollectionBroker() {
-        return new Queue(DATA_COLLECTION_BROKER, true);
-    }
-
-    @Bean
-    public Queue synchronizationBroker() {
-        return new Queue(SYNCHRONIZATION_BROKER, true);
-    }
 
     @Bean
     public Queue notificationBroker() {
         return new Queue(NOTIFICATION_BROKER, true);
     }
+
 
     @Bean
     public MessageConverter jsonMessageConverter(ObjectMapper objectMapper) {

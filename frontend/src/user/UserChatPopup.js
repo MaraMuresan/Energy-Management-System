@@ -15,6 +15,10 @@ export default function UserChatPopup() {
     const lastSentRef = useRef(null);
     const botReplyReceivedRef = useRef(false);
 
+    const [lastAlert, setLastAlert] = useState(null);
+    const [showAlertDetails, setShowAlertDetails] = useState(false);
+
+
     function decodeJwt(token) {
         const payload = token.split(".")[1];
         return JSON.parse(atob(payload));
@@ -45,6 +49,13 @@ export default function UserChatPopup() {
                     }
 
                     addMessage(msg.from, msg.content);
+                });
+
+                stomp.subscribe(`/topic/alerts/${userId.current}`, (frame) => {
+                    const alertData = JSON.parse(frame.body);
+
+                    setLastAlert(alertData);
+                    setShowAlertDetails(true);
                 });
 
                 stompClient.current = stomp;
@@ -130,6 +141,30 @@ export default function UserChatPopup() {
                     </div>
                 </div>
             )}
+
+            {showAlertDetails && lastAlert && (
+                <div className="alert-toast">
+                    <div className="alert-toast-header">
+                        <strong>Overconsumption Alert</strong>
+                        <button
+                            className="alert-close"
+                            onClick={() => setShowAlertDetails(false)}
+                        >
+                            ×
+                        </button>
+                    </div>
+
+                    <div className="alert-toast-body">
+                        <p><b>Device:</b> {lastAlert.deviceId}</p>
+                        <p><b>Hourly:</b> {lastAlert.hourlyConsumption}</p>
+                        <p><b>Max:</b> {lastAlert.maximumConsumption}</p>
+                        <p>{lastAlert.message}</p>
+                        <small>{lastAlert.timestamp}</small>
+                    </div>
+                </div>
+            )}
+
+
         </>
     );
 }

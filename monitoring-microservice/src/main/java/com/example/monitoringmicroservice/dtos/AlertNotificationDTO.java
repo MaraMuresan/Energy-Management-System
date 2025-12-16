@@ -1,4 +1,4 @@
-package com.example.websocketmicroservice.dtos;
+package com.example.monitoringmicroservice.dtos;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -34,7 +34,6 @@ public class AlertNotificationDTO {
     public void setEvent(String event) {
         this.event = event;
     }
-
     public UUID getUserId() {
         return userId;
     }

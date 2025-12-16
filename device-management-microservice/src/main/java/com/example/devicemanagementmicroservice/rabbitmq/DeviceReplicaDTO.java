@@ -7,12 +7,16 @@ public class DeviceReplicaDTO {
     private String event;
     private UUID id;
     private String name;
+    private Double maximumConsumption;
+    private UUID userId;
 
     public DeviceReplicaDTO() {}
 
-    public DeviceReplicaDTO(UUID id, String name) {
+    public DeviceReplicaDTO(UUID id, String name, Double maximumConsumption, UUID userId) {
         this.id = id;
         this.name = name;
+        this.maximumConsumption = maximumConsumption;
+        this.userId = userId;
     }
 
     public String getEvent() {
@@ -38,4 +42,16 @@ public class DeviceReplicaDTO {
     public void setName(String name) {
         this.name = name;
     }
+
+    public Double getMaximumConsumption() {
+        return maximumConsumption;
+    }
+
+    public void setMaximumConsumption(Double maximumConsumption) {
+        this.maximumConsumption = maximumConsumption;
+    }
+
+    public UUID getUserId() { return userId; }
+
+    public void setUserId(UUID userId) { this.userId = userId; }
 }

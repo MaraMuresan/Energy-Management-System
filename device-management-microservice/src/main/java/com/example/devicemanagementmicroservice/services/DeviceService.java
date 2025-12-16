@@ -79,6 +79,8 @@ public class DeviceService {
         event.setEvent("DEVICE_CREATED");
         event.setId(device.getId());
         event.setName(device.getName());
+        event.setMaximumConsumption(device.getMaximumConsumption());
+        event.setUserId(device.getUserReplica().getId());
         devicePublisher.publish(event);
 
         return device.getId();
@@ -112,6 +114,8 @@ public class DeviceService {
         event.setEvent("DEVICE_UPDATED");
         event.setId(deviceAfter.getId());
         event.setName(deviceAfter.getName());
+        event.setMaximumConsumption(deviceAfter.getMaximumConsumption());
+        event.setUserId(deviceAfter.getUserReplica().getId());
         devicePublisher.publish(event);
 
         return DeviceBuilder.toDeviceDTO(deviceAfter);
