@@ -7,7 +7,7 @@ import "../index.css";
 
 export default function ConsumptionPage() {
 
-    const deviceId = "8c8b5480-0b0e-4e1f-931c-8fd1b4ff008c";
+    const deviceId = "97df1aec-ea17-416c-95b0-7e90dbab0ae0";
 
     const [date, setDate] = useState("");
     const [data, setData] = useState([]);
