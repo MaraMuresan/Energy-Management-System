@@ -213,7 +213,7 @@ services:
     ports:
       - "8085:8085"
     environment:
-      GEMINI_API_KEY: AIzaSyCzpbLckJYkY_anngh3T8nKKGk9JgYISoQ
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
       JWT_SECRET: mySuperSecretKeyForJwtEncryptionMustBeAtLeast32CharsLong123!
     depends_on:
       rabbitmq:
